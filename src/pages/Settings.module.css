@@ -1,0 +1,21 @@
+.page { display: flex; flex-direction: column; }
+.inner { padding: 0 1.75rem 2rem; display: flex; flex-direction: column; gap: 1.25rem; }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+@media (max-width: 700px) { .row { grid-template-columns: 1fr; } }
+
+.section { padding: 1.5rem; }
+.sectionTitle { font-size: 14px; font-weight: 600; margin-bottom: 1.25rem; }
+.fields { display: flex; flex-direction: column; gap: 14px; }
+
+.connStatus {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 13px; font-weight: 500; color: var(--green);
+  background: var(--green-light); padding: 9px 14px;
+  border-radius: var(--radius-md);
+}
+
+.plansGrid { display: flex; flex-direction: column; gap: 10px; }
+.planRow { display: flex; align-items: center; gap: 12px; }
+.planLabel { font-size: 13px; color: var(--text-secondary); min-width: 80px; }
+.planInput { width: 120px; }
+.planUnit { font-size: 12px; color: var(--text-muted); }

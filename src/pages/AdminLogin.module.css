@@ -1,0 +1,48 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  padding: 1.5rem;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+}
+
+.icon {
+  width: 48px; height: 48px;
+  background: var(--green);
+  border-radius: var(--radius-lg);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 1.25rem;
+}
+
+.title {
+  font-size: 20px; font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+.sub { font-size: 13px; color: var(--text-secondary); margin-bottom: 2rem; }
+
+.form { text-align: left; display: flex; flex-direction: column; gap: 14px; }
+
+.error {
+  font-size: 12.5px;
+  color: #b91c1c;
+  background: #fff1f1;
+  border: 1px solid #fca5a5;
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+}
+
+.submitBtn { width: 100%; justify-content: center; height: 42px; font-size: 14px; }
+.backBtn { width: 100%; justify-content: center; margin-top: 8px; color: var(--text-secondary); font-size: 13px; }

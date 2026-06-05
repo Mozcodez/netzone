@@ -1,0 +1,146 @@
+.page { min-height: 100vh; display: flex; flex-direction: column; background: var(--bg); }
+
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+}
+.logo { display: flex; align-items: center; gap: 9px; font-size: 15px; font-weight: 600; }
+.logoIcon {
+  width: 30px; height: 30px; background: var(--green);
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+}
+
+.main {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-start;
+  padding: 2rem 1.5rem;
+  gap: 1.25rem;
+}
+
+/* Tabs */
+.tabs {
+  display: flex; gap: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 4px;
+  width: 100%; max-width: 400px;
+}
+.tab {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px;
+  height: 38px; border: none; border-radius: var(--radius-md);
+  background: transparent; font-size: 13.5px; font-weight: 500;
+  color: var(--text-secondary); cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.tab:hover { background: var(--bg); color: var(--text-primary); }
+.tabActive { background: var(--green); color: white; }
+.tabActive:hover { background: var(--green-dark); }
+
+/* Login / check card */
+.loginCard {
+  width: 100%; max-width: 400px;
+  padding: 2.25rem 2rem; text-align: center;
+  box-shadow: var(--shadow-md);
+}
+
+.cardIcon {
+  width: 52px; height: 52px; background: var(--green);
+  border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 1.25rem;
+}
+.cardIconCheck { background: #185fa5; }
+
+.cardTitle { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 6px; }
+.cardSub { font-size: 13.5px; color: var(--text-secondary); margin-bottom: 1.75rem; line-height: 1.5; }
+
+.codeInput {
+  width: 100%; height: 52px;
+  font-family: 'DM Mono', monospace;
+  font-size: 20px; font-weight: 500;
+  letter-spacing: 0.1em; text-align: center;
+  text-transform: uppercase;
+  border: 1.5px solid var(--border-mid);
+  border-radius: var(--radius-lg);
+  background: var(--bg); color: var(--text-primary);
+  outline: none; transition: border-color 0.15s, box-shadow 0.15s;
+  margin-bottom: 10px;
+}
+.codeInput:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 4px rgba(26,127,94,0.1);
+  background: var(--surface);
+}
+
+.error {
+  font-size: 12.5px; color: #b91c1c;
+  background: #fff1f1; border-radius: var(--radius-md);
+  padding: 8px 12px; margin-bottom: 12px; text-align: left;
+}
+
+.connectBtn { width: 100%; justify-content: center; height: 46px; font-size: 15px; margin-bottom: 1.25rem; }
+
+.plans { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.planPill {
+  font-size: 12px; color: var(--text-secondary);
+  background: var(--bg); border: 1px solid var(--border);
+  padding: 4px 12px; border-radius: 100px;
+}
+
+.checkHint {
+  font-size: 12px; color: var(--text-muted);
+  margin-top: 0.75rem; line-height: 1.6;
+}
+
+/* Session / timer card */
+.sessionCard {
+  width: 100%; max-width: 400px;
+  padding: 2.25rem 2rem; text-align: center;
+  box-shadow: var(--shadow-md);
+}
+.connectedIcon {
+  width: 60px; height: 60px; background: var(--green);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 1rem;
+}
+.expiredIcon { background: var(--text-muted); }
+
+.connectedLabel { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+.connectedSub { font-size: 13px; color: var(--text-secondary); margin-bottom: 1.75rem; }
+
+.timerDisplay {
+  font-family: 'DM Mono', monospace;
+  font-size: 46px; font-weight: 500;
+  color: var(--green); letter-spacing: 0.04em;
+  margin-bottom: 4px; transition: color 0.3s;
+}
+.timerWarning { color: #d97706; }
+.timerExpired { color: var(--text-muted); }
+
+.timerLabel { font-size: 12px; color: var(--text-muted); margin-bottom: 1.5rem; }
+
+.progressWrap { display: flex; align-items: center; gap: 10px; margin-bottom: 1.25rem; }
+.progressBar { flex: 1; height: 7px; background: var(--surface-2); border-radius: 4px; overflow: hidden; }
+.progressFill { height: 100%; background: var(--green); border-radius: 4px; transition: width 1s linear, background 0.3s; }
+.progressWarning { background: #d97706; }
+.progressPct { font-size: 12px; color: var(--text-muted); min-width: 32px; text-align: right; }
+
+.sessionMeta {
+  display: flex; justify-content: space-between;
+  font-size: 12px; color: var(--text-muted);
+  background: var(--bg); border-radius: var(--radius-md);
+  padding: 10px 14px; margin-bottom: 1rem;
+}
+.sessionCode { font-family: 'DM Mono', monospace; font-size: 12px; }
+
+.expiredMsg {
+  font-size: 13px; color: #b91c1c;
+  background: #fff1f1; border-radius: var(--radius-md);
+  padding: 10px 14px; margin-bottom: 1rem;
+}
+
+.resetBtn { width: 100%; justify-content: center; color: var(--text-secondary); font-size: 13px; }
