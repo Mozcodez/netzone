@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useVouchers } from '../store/VoucherContext';
+import { useVouchers } from '../store/hooks/useVouchers';
 import PageHeader from '../components/PageHeader';
 import GenerateModal from '../components/GenerateModal';
 import styles from './Vouchers.module.css';

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useVouchers } from '../store/VoucherContext';
+import { useVouchers } from '../store/hooks/useVouchers';
 import PageHeader from '../components/PageHeader';
 import styles from './Sessions.module.css';
 

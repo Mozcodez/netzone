@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useVouchers } from "../store/VoucherContext";
+import { useVouchers } from "../store/hooks/useVouchers";
 import styles from "./Portal.module.css";
 
 function pad(n) {
@@ -8,7 +8,9 @@ function pad(n) {
 }
 
 function timeLeftFrom(expiresAt) {
-  return Math.max(0, Math.floor((new Date(expiresAt) - new Date()) / 1000));
+  const diff = new Date(expiresAt) - new Date();
+  if (Number.isNaN(diff)) return 0;
+  return Math.max(0, Math.floor(diff / 1000));
 }
 
 // Shared timer display used by both connect flow and check flow
@@ -133,17 +135,22 @@ function ConnectTab() {
     setError("");
   };
 
-  const handleConnect = () => {
+  const handleConnect = async () => {
     if (code.replace(/-/g, "").length < 6) {
       setError("Please enter a valid voucher code.");
       return;
     }
-    const result = redeem(code);
-    if (!result) {
-      setError("Invalid code or already used. Please check and try again.");
+
+    const result = await redeem(code);
+    if (!result?.success) {
+      setError(
+        result?.message ||
+          "Invalid code or already used. Please check and try again.",
+      );
       return;
     }
-    setSession(result);
+
+    setSession(result.voucher);
   };
 
   if (session)

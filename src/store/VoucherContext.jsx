@@ -1,45 +1,147 @@
-import { createContext, useContext, useState, useCallback } from 'react';
-import { initialVouchers, makeVoucher } from './vouchers';
+import { useState, useEffect, useCallback } from "react";
+import { supabase } from "../lib/supabase";
+import { makeVoucher } from "./vouchers";
+import { VoucherContext } from "./voucherContext";
 
-const VoucherContext = createContext(null);
+function normalizeVoucher(voucher) {
+  return {
+    ...voucher,
+    startedAt: voucher.started_at ?? voucher.startedAt,
+    expiresAt: voucher.expires_at ?? voucher.expiresAt,
+  };
+}
 
 export function VoucherProvider({ children }) {
-  const [vouchers, setVouchers] = useState(initialVouchers);
+  const [vouchers, setVouchers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const generate = useCallback((duration, price, qty) => {
-    const newOnes = Array.from({ length: qty }, () => makeVoucher(duration, price));
-    setVouchers(prev => [...newOnes, ...prev]);
-    return newOnes;
+  const fetchVouchers = useCallback(async () => {
+    const { data, error } = await supabase
+      .from("vouchers")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) setError(error.message);
+    else setVouchers(data.map(normalizeVoucher));
+    setLoading(false);
   }, []);
 
-  const redeem = useCallback((code) => {
-    let found = null;
-    setVouchers(prev => prev.map(v => {
-      if (v.code === code && v.status === 'unused') {
-        const now = new Date();
-        const expires = new Date(now.getTime() + v.duration * 60 * 60 * 1000);
-        const mac = 'CC:DD:EE:' + [1,2,3].map(()=>Math.floor(Math.random()*90+10)).join(':');
-        found = { ...v, status: 'active', startedAt: now.toISOString(), expiresAt: expires.toISOString(), mac };
-        return found;
-      }
-      return v;
-    }));
-    return found;
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      if (!mounted) return;
+      setLoading(true);
+      await fetchVouchers();
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, [fetchVouchers]);
+
+  const generate = useCallback(async (duration, price, qty) => {
+    const newVouchers = Array.from({ length: qty }, () =>
+      makeVoucher(duration, price),
+    );
+
+    const { data, error } = await supabase
+      .from("vouchers")
+      .insert(newVouchers)
+      .select();
+
+    if (error) {
+      setError(error.message);
+      return null;
+    }
+    setVouchers((prev) => [...data.map(normalizeVoucher), ...prev]);
+    return data.map(normalizeVoucher);
   }, []);
 
-  const disconnect = useCallback((id) => {
-    setVouchers(prev => prev.map(v => v.id === id ? { ...v, status: 'expired' } : v));
+  const redeem = useCallback(async (code, mac = null) => {
+    const { data, error } = await supabase.rpc("redeem_voucher", {
+      p_code: code,
+      p_mac: mac,
+    });
+
+    if (error || !data.success) {
+      return { success: false, message: data?.error || error?.message };
+    }
+
+    const voucher = normalizeVoucher({
+      ...data,
+      mac,
+    });
+
+    setVouchers((prev) =>
+      prev.map((v) =>
+        v.code === code
+          ? {
+              ...v,
+              status: "active",
+              startedAt: voucher.startedAt,
+              expiresAt: voucher.expiresAt,
+              started_at: voucher.startedAt,
+              expires_at: voucher.expiresAt,
+              mac,
+            }
+          : v,
+      ),
+    );
+
+    return { success: true, voucher };
   }, []);
 
-  const remove = useCallback((id) => {
-    setVouchers(prev => prev.filter(v => v.id !== id));
+  const disconnect = useCallback(async (id) => {
+    const { error } = await supabase
+      .from("vouchers")
+      .update({ status: "expired" })
+      .eq("id", id);
+
+    if (error) {
+      setError(error.message);
+      return;
+    }
+    setVouchers((prev) =>
+      prev.map((v) => (v.id === id ? { ...v, status: "expired" } : v)),
+    );
+  }, []);
+
+  const remove = useCallback(async (id) => {
+    const { error } = await supabase.from("vouchers").delete().eq("id", id);
+
+    if (error) {
+      setError(error.message);
+      return;
+    }
+    setVouchers((prev) => prev.filter((v) => v.id !== id));
+  }, []);
+
+  const checkByCode = useCallback(async (code) => {
+    const { data, error } = await supabase
+      .from("vouchers")
+      .select("*")
+      .eq("code", code)
+      .single();
+
+    if (error) return null;
+    return normalizeVoucher(data);
   }, []);
 
   return (
-    <VoucherContext.Provider value={{ vouchers, generate, redeem, disconnect, remove }}>
+    <VoucherContext.Provider
+      value={{
+        vouchers,
+        loading,
+        error,
+        generate,
+        redeem,
+        disconnect,
+        remove,
+        checkByCode,
+        fetchVouchers,
+      }}
+    >
       {children}
     </VoucherContext.Provider>
   );
 }
-
-export const useVouchers = () => useContext(VoucherContext);

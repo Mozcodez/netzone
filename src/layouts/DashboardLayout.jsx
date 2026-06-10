@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { useAuth } from "../store/AuthContext";
-import { useVouchers } from "../store/VoucherContext";
+import { useAuth } from "../store/hooks/useAuth";
+import { useVouchers } from "../store/hooks/useVouchers";
 import styles from "./DashboardLayout.module.css";
 
 const WifiIcon = () => (

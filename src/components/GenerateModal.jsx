@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useVouchers } from '../store/VoucherContext';
+import { useVouchers } from '../store/hooks/useVouchers';
 import styles from './GenerateModal.module.css';
 
 export default function GenerateModal({ onClose }) {
