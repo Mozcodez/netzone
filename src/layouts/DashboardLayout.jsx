@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../store/hooks/useAuth";
 import { useVouchers } from "../store/hooks/useVouchers";
@@ -156,7 +156,32 @@ export default function DashboardLayout() {
   const { logout } = useAuth();
   const { vouchers } = useVouchers();
   const navigate = useNavigate();
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(max-width: 520px)").matches,
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const query = window.matchMedia("(max-width: 520px)");
+    const handleChange = (event) => setCollapsed(event.matches);
+
+    if (query.addEventListener) {
+      query.addEventListener("change", handleChange);
+    } else {
+      query.addListener(handleChange);
+    }
+
+    return () => {
+      if (query.removeEventListener) {
+        query.removeEventListener("change", handleChange);
+      } else {
+        query.removeListener(handleChange);
+      }
+    };
+  }, []);
+
   const activeSessions = vouchers.filter((v) => v.status === "active").length;
   const navItems = NAV_ITEMS.map((item, idx, arr) => {
     const prev = arr[idx - 1];
